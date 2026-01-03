@@ -34,5 +34,5 @@ outputs:
     description: 'URL to the uploaded HTML report artifact'
 
 runs:
-  using: 'node24'
+  using: 'node20'
   main: 'dist/index.js'
