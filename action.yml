@@ -1,0 +1,38 @@
+name: 'DryScan Code Duplication Check'
+description: 'Analyze code for semantic duplication using DryScan and fail if duplication score exceeds threshold'
+author: 'Goshenkata'
+
+branding:
+  icon: 'search'
+  color: 'blue'
+
+inputs:
+  google-api-key:
+    description: 'Google API key for Gemini embeddings'
+    required: true
+  threshold:
+    description: 'Maximum allowed duplication score (0-100). Action fails if score exceeds this value.'
+    required: true
+    default: '20'
+  path:
+    description: 'Path to the repository to scan'
+    required: false
+    default: '.'
+  github-token:
+    description: 'GitHub token for PR comments and artifact uploads'
+    required: false
+    default: ${{ github.token }}
+
+outputs:
+  score:
+    description: 'The duplication score (0-100)'
+  grade:
+    description: 'The duplication grade (Excellent, Good, Fair, Poor, Critical)'
+  passed:
+    description: 'Whether the check passed (true/false)'
+  artifact-url:
+    description: 'URL to the uploaded HTML report artifact'
+
+runs:
+  using: 'node22'
+  main: 'dist/main.js'
