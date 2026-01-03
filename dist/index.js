@@ -75689,6 +75689,7 @@ async function run() {
         let initStdout = '';
         let initStderr = '';
         const initExitCode = await exec.exec('npx', ['@goshenkata/dryscan-cli@1.0.12', 'init', absoluteScanPath], {
+            ignoreReturnCode: true,
             env: {
                 ...process.env,
                 GOOGLE_API_KEY: googleApiKey,
@@ -75707,7 +75708,11 @@ async function run() {
             },
         });
         if (initExitCode !== 0) {
-            throw new Error(`DryScan init failed with exit code ${initExitCode}.\nStdout: ${initStdout}\nStderr: ${initStderr}`);
+            core.error('DryScan init command output:');
+            core.error(`Exit code: ${initExitCode}`);
+            core.error(`Stdout: ${initStdout}`);
+            core.error(`Stderr: ${initStderr}`);
+            throw new Error(`DryScan init failed with exit code ${initExitCode}. Check logs above for details.`);
         }
         core.info('DryScan initialization completed successfully');
         core.endGroup();
@@ -75716,6 +75721,7 @@ async function run() {
         let jsonOutput = '';
         let dupesStderr = '';
         const dupesExitCode = await exec.exec('npx', ['@goshenkata/dryscan-cli@1.0.12', 'dupes', absoluteScanPath, '--json'], {
+            ignoreReturnCode: true,
             env: {
                 ...process.env,
                 GOOGLE_API_KEY: googleApiKey,
@@ -75734,7 +75740,11 @@ async function run() {
             },
         });
         if (dupesExitCode !== 0) {
-            throw new Error(`DryScan dupes failed with exit code ${dupesExitCode}.\nStderr: ${dupesStderr}`);
+            core.error('DryScan dupes command output:');
+            core.error(`Exit code: ${dupesExitCode}`);
+            core.error(`JSON output: ${jsonOutput}`);
+            core.error(`Stderr: ${dupesStderr}`);
+            throw new Error(`DryScan dupes failed with exit code ${dupesExitCode}. Check logs above for details.`);
         }
         core.info('Duplicate analysis completed successfully');
         core.endGroup();
@@ -75749,6 +75759,7 @@ async function run() {
         let htmlOutput = '';
         let htmlStderr = '';
         const htmlExitCode = await exec.exec('npx', ['@goshenkata/dryscan-cli@1.0.12', 'dupes', absoluteScanPath, '--html'], {
+            ignoreReturnCode: true,
             env: {
                 ...process.env,
                 GOOGLE_API_KEY: googleApiKey,
@@ -75767,7 +75778,10 @@ async function run() {
             },
         });
         if (htmlExitCode !== 0) {
-            throw new Error(`DryScan HTML report generation failed with exit code ${htmlExitCode}.\nStderr: ${htmlStderr}`);
+            core.error('DryScan HTML report generation output:');
+            core.error(`Exit code: ${htmlExitCode}`);
+            core.error(`Stderr: ${htmlStderr}`);
+            throw new Error(`DryScan HTML report generation failed with exit code ${htmlExitCode}. Check logs above for details.`);
         }
         const reportPath = path.join(workspacePath, REPORT_FILENAME);
         await fs.writeFile(reportPath, htmlOutput, 'utf-8');
