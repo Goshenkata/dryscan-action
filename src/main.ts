@@ -46,6 +46,17 @@ async function run(): Promise<void> {
     core.info(`Scanning path: ${absoluteScanPath}`);
     core.info(`Threshold: ${threshold}`);
 
+    // Install dryscan-cli first to separate npm output from CLI output
+    core.startGroup('Installing DryScan CLI');
+    const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@1.0.12'], {
+      ignoreReturnCode: true,
+    });
+    if (installExitCode !== 0) {
+      throw new Error(`Failed to install @goshenkata/dryscan-cli. Exit code: ${installExitCode}`);
+    }
+    core.info('DryScan CLI installed successfully');
+    core.endGroup();
+
     // Configure dryscan to use Google embeddings
     core.startGroup('Configuring DryScan');
     await ensureGoogleEmbeddingsConfig(absoluteScanPath);
@@ -56,7 +67,7 @@ async function run(): Promise<void> {
     core.startGroup('Initializing DryScan');
     let initStdout = '';
     let initStderr = '';
-    const initExitCode = await exec.exec('npx', ['--yes', '@goshenkata/dryscan-cli@1.0.12', 'init', absoluteScanPath], {
+    const initExitCode = await exec.exec('dryscan', ['init', absoluteScanPath], {
       ignoreReturnCode: true,
       env: {
         ...process.env,
@@ -89,7 +100,7 @@ async function run(): Promise<void> {
     core.startGroup('Running duplicate analysis');
     let jsonOutput = '';
     let dupesStderr = '';
-    const dupesExitCode = await exec.exec('npx', ['--yes', '@goshenkata/dryscan-cli@1.0.12', 'dupes', absoluteScanPath, '--json'], {
+    const dupesExitCode = await exec.exec('dryscan', ['dupes', absoluteScanPath, '--json'], {
       ignoreReturnCode: true,
       env: {
         ...process.env,
@@ -130,7 +141,7 @@ async function run(): Promise<void> {
     core.startGroup('Generating HTML report');
     let htmlOutput = '';
     let htmlStderr = '';
-    const htmlExitCode = await exec.exec('npx', ['--yes', '@goshenkata/dryscan-cli@1.0.12', 'dupes', absoluteScanPath, '--html'], {
+    const htmlExitCode = await exec.exec('dryscan', ['dupes', absoluteScanPath, '--html'], {
       ignoreReturnCode: true,
       env: {
         ...process.env,
