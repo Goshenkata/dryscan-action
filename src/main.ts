@@ -54,7 +54,7 @@ async function run(): Promise<void> {
 
     // Initialize dryscan
     core.startGroup('Initializing DryScan');
-    await exec.exec('npx', ['@goshenkata/dryscan-cli', 'init', absoluteScanPath], {
+    await exec.exec('npx', ['@goshenkata/dryscan-cli@1.0.12', 'init', absoluteScanPath], {
       env: {
         ...process.env,
         GOOGLE_API_KEY: googleApiKey,
@@ -65,7 +65,7 @@ async function run(): Promise<void> {
     // Run dryscan dupes --json to get the score
     core.startGroup('Running duplicate analysis');
     let jsonOutput = '';
-    await exec.exec('npx', ['@goshenkata/dryscan-cli', 'dupes', absoluteScanPath, '--json'], {
+    await exec.exec('npx', ['@goshenkata/dryscan-cli@1.0.12', 'dupes', absoluteScanPath, '--json'], {
       env: {
         ...process.env,
         GOOGLE_API_KEY: googleApiKey,
@@ -89,7 +89,7 @@ async function run(): Promise<void> {
     // Generate HTML report
     core.startGroup('Generating HTML report');
     let htmlOutput = '';
-    await exec.exec('npx', ['@goshenkata/dryscan-cli', 'dupes', absoluteScanPath, '--html'], {
+    await exec.exec('npx', ['@goshenkata/dryscan-cli@1.0.12', 'dupes', absoluteScanPath, '--html'], {
       env: {
         ...process.env,
         GOOGLE_API_KEY: googleApiKey,
