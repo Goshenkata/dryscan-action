@@ -2,9 +2,9 @@
   "name": "dryscan-action",
   "version": "0.1.0",
   "description": "GitHub Action for DryScan code duplication analysis",
-  "main": "dist/main.js",
+  "main": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "ncc build src/main.ts -o dist --source-map --license licenses.txt",
     "watch": "tsc --watch"
   },
   "keywords": [
@@ -16,6 +16,7 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.10.0",
+    "@vercel/ncc": "^0.38.4",
     "typescript": "^5.3.3"
   },
   "dependencies": {

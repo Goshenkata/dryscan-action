@@ -20,7 +20,7 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       
-      - uses: Goshenkata/dryscan-action@v2
+      - uses: Goshenkata/dryscan-action@v2.1
         with:
           google-api-key: ${{ secrets.GOOGLE_API_KEY }}
           threshold: 20
