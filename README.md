@@ -20,6 +20,10 @@ jobs:
     steps:
       - uses: actions/checkout@v6
       
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      
       - uses: Goshenkata/dryscan-action@v2
         with:
           google-api-key: ${{ secrets.GOOGLE_API_KEY }}
