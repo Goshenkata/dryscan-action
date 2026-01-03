@@ -56,7 +56,7 @@ async function run(): Promise<void> {
     core.startGroup('Initializing DryScan');
     let initStdout = '';
     let initStderr = '';
-    const initExitCode = await exec.exec('npx', ['@goshenkata/dryscan-cli@1.0.12', 'init', absoluteScanPath], {
+    const initExitCode = await exec.exec('npx', ['--yes', '@goshenkata/dryscan-cli@1.0.12', 'init', absoluteScanPath], {
       ignoreReturnCode: true,
       env: {
         ...process.env,
@@ -76,10 +76,10 @@ async function run(): Promise<void> {
       },
     });
     if (initExitCode !== 0) {
-      core.error('DryScan init command output:');
+      core.error('=== DryScan init failed ===');
       core.error(`Exit code: ${initExitCode}`);
-      core.error(`Stdout: ${initStdout}`);
-      core.error(`Stderr: ${initStderr}`);
+      if (initStdout) core.error(`Stdout:\n${initStdout}`);
+      if (initStderr) core.error(`Stderr:\n${initStderr}`);
       throw new Error(`DryScan init failed with exit code ${initExitCode}. Check logs above for details.`);
     }
     core.info('DryScan initialization completed successfully');
@@ -89,7 +89,7 @@ async function run(): Promise<void> {
     core.startGroup('Running duplicate analysis');
     let jsonOutput = '';
     let dupesStderr = '';
-    const dupesExitCode = await exec.exec('npx', ['@goshenkata/dryscan-cli@1.0.12', 'dupes', absoluteScanPath, '--json'], {
+    const dupesExitCode = await exec.exec('npx', ['--yes', '@goshenkata/dryscan-cli@1.0.12', 'dupes', absoluteScanPath, '--json'], {
       ignoreReturnCode: true,
       env: {
         ...process.env,
@@ -109,10 +109,10 @@ async function run(): Promise<void> {
       },
     });
     if (dupesExitCode !== 0) {
-      core.error('DryScan dupes command output:');
+      core.error('=== DryScan dupes failed ===');
       core.error(`Exit code: ${dupesExitCode}`);
-      core.error(`JSON output: ${jsonOutput}`);
-      core.error(`Stderr: ${dupesStderr}`);
+      if (jsonOutput) core.error(`JSON output:\n${jsonOutput}`);
+      if (dupesStderr) core.error(`Stderr:\n${dupesStderr}`);
       throw new Error(`DryScan dupes failed with exit code ${dupesExitCode}. Check logs above for details.`);
     }
     core.info('Duplicate analysis completed successfully');
@@ -130,7 +130,7 @@ async function run(): Promise<void> {
     core.startGroup('Generating HTML report');
     let htmlOutput = '';
     let htmlStderr = '';
-    const htmlExitCode = await exec.exec('npx', ['@goshenkata/dryscan-cli@1.0.12', 'dupes', absoluteScanPath, '--html'], {
+    const htmlExitCode = await exec.exec('npx', ['--yes', '@goshenkata/dryscan-cli@1.0.12', 'dupes', absoluteScanPath, '--html'], {
       ignoreReturnCode: true,
       env: {
         ...process.env,
@@ -150,9 +150,9 @@ async function run(): Promise<void> {
       },
     });
     if (htmlExitCode !== 0) {
-      core.error('DryScan HTML report generation output:');
+      core.error('=== DryScan HTML report generation failed ===');
       core.error(`Exit code: ${htmlExitCode}`);
-      core.error(`Stderr: ${htmlStderr}`);
+      if (htmlStderr) core.error(`Stderr:\n${htmlStderr}`);
       throw new Error(`DryScan HTML report generation failed with exit code ${htmlExitCode}. Check logs above for details.`);
     }
 
