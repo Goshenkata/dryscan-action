@@ -75687,7 +75687,7 @@ async function run() {
         core.info(`Threshold: ${threshold}`);
         // Install dryscan-cli first to separate npm output from CLI output
         core.startGroup('Installing DryScan CLI');
-        const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@1.1.2'], {
+        const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@latest'], {
             ignoreReturnCode: true,
         });
         if (installExitCode !== 0) {
@@ -75768,8 +75768,15 @@ async function run() {
         }
         core.info('Duplicate analysis completed successfully');
         core.endGroup();
-        // Parse the JSON output
-        const report = JSON.parse(jsonOutput);
+        // Parse the JSON output - extract JSON from potentially mixed output
+        // The CLI may output log messages like "[DryScan]..." before the JSON
+        const jsonStartIndex = jsonOutput.indexOf('{');
+        const jsonEndIndex = jsonOutput.lastIndexOf('}');
+        if (jsonStartIndex === -1 || jsonEndIndex === -1) {
+            throw new Error(`Failed to find valid JSON in dryscan output. Output was: ${jsonOutput.substring(0, 500)}`);
+        }
+        const cleanJson = jsonOutput.substring(jsonStartIndex, jsonEndIndex + 1);
+        const report = JSON.parse(cleanJson);
         const score = report.score.score;
         const grade = report.score.grade;
         core.info(`Duplication Score: ${score}`);
