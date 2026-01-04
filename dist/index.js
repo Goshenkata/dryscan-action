@@ -75603,13 +75603,21 @@ async function ensureGoogleEmbeddingsConfig(repoPath) {
     catch {
         // Config doesn't exist, create default
         config = {
-            threshold: 0.88,
-            minLines: 5,
-            excludedPaths: [],
+            excludedPaths: [
+                "**/test/**",
+            ],
+            excludedPairs: [],
+            minLines: 3,
+            minBlockLines: 5,
+            threshold: 0.9,
+            embeddingModel: "gemini-embedding-001",
+            embeddingSource: "google",
+            contextLength: 2048,
         };
     }
     // Set embedding source to Google
     config.embeddingSource = 'google';
+    config.embeddingModel = 'gemini-embedding-001';
     await fs.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
 }
 
@@ -75681,7 +75689,7 @@ async function run() {
         core.info(`Threshold: ${threshold}`);
         // Install dryscan-cli first to separate npm output from CLI output
         core.startGroup('Installing DryScan CLI');
-        const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@1.0.15'], {
+        const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@1.0.16'], {
             ignoreReturnCode: true,
         });
         if (installExitCode !== 0) {

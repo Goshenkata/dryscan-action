@@ -29,14 +29,22 @@ export async function ensureGoogleEmbeddingsConfig(repoPath: string): Promise<vo
   } catch {
     // Config doesn't exist, create default
     config = {
-      threshold: 0.88,
-      minLines: 5,
-      excludedPaths: [],
+      excludedPaths: [
+        "**/test/**",
+      ],
+      excludedPairs: [],
+      minLines: 3,
+      minBlockLines: 5,
+      threshold: 0.9,
+      embeddingModel: "gemini-embedding-001",
+      embeddingSource: "google",
+      contextLength: 2048,
     };
   }
 
   // Set embedding source to Google
   config.embeddingSource = 'google';
+  config.embeddingModel = 'gemini-embedding-001';
 
   await fs.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
 }

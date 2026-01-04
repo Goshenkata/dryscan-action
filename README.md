@@ -18,10 +18,10 @@ jobs:
       pull-requests: write
     
     steps:
-      - name: Set up Node.js 24
+      - name: Set up Node.js 20
         uses: actions/setup-node@v6
         with:
-          node-version: 24
+          node-version: 20
       - uses: actions/checkout@v6
       
       - uses: Goshenkata/dryscan-action@v2
