@@ -26,7 +26,7 @@ jobs:
       
       - uses: Goshenkata/dryscan-action@v2
         with:
-          google-api-key: ${{ secrets.GOOGLE_API_KEY }}
+          huggingface-api-key: ${{ secrets.HUGGINGFACEHUB_API_KEY }}
           threshold: 20
           path: '.'
           github-token: ${{ secrets.GITHUB_TOKEN }}
