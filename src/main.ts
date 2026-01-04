@@ -48,7 +48,7 @@ async function run(): Promise<void> {
 
     // Install dryscan-cli first to separate npm output from CLI output
     core.startGroup('Installing DryScan CLI');
-    const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@1.1.1'], {
+    const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@1.1.2'], {
       ignoreReturnCode: true,
     });
     if (installExitCode !== 0) {
