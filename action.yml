@@ -7,8 +7,8 @@ branding:
   color: 'blue'
 
 inputs:
-  google-api-key:
-    description: 'Google API key for Gemini embeddings'
+  huggingface-api-key:
+    description: 'HuggingFace API key for embeddings'
     required: true
   threshold:
     description: 'Maximum allowed duplication score (0-100). Action fails if score exceeds this value.'

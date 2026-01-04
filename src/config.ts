@@ -15,10 +15,10 @@ interface DryConfig {
 }
 
 /**
- * Ensures dryconfig.json exists and is configured to use Google embeddings.
+ * Ensures dryconfig.json exists and is configured to use HuggingFace embeddings.
  * Creates a new config if it doesn't exist, or modifies existing one.
  */
-export async function ensureGoogleEmbeddingsConfig(repoPath: string): Promise<void> {
+export async function ensureHuggingFaceEmbeddingsConfig(repoPath: string): Promise<void> {
   const configPath = path.join(repoPath, CONFIG_FILENAME);
 
   let config: DryConfig;
@@ -36,15 +36,13 @@ export async function ensureGoogleEmbeddingsConfig(repoPath: string): Promise<vo
       minLines: 3,
       minBlockLines: 5,
       threshold: 0.9,
-      embeddingModel: "gemini-embedding-001",
-      embeddingSource: "google",
+      embeddingSource: "huggingface",
       contextLength: 2048,
     };
   }
 
-  // Set embedding source to Google
-  config.embeddingSource = 'google';
-  config.embeddingModel = 'gemini-embedding-001';
+  // Set embedding source to HuggingFace
+  config.embeddingSource = 'huggingface';
 
   await fs.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
 }

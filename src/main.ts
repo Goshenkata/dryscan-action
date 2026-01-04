@@ -5,7 +5,7 @@ import { DefaultArtifactClient } from '@actions/artifact';
 import * as fs from 'fs/promises';
 import * as path from 'path';
 
-import { ensureGoogleEmbeddingsConfig } from './config';
+import { ensureHuggingFaceEmbeddingsConfig } from './config';
 import { commentOnPr, isPullRequest } from './pr-comment';
 
 const REPORT_FILENAME = 'dryscan-report.html';
@@ -31,13 +31,13 @@ interface DuplicateReport {
 async function run(): Promise<void> {
   try {
     // Get inputs
-    const googleApiKey = core.getInput('google-api-key', { required: true });
+    const huggingfaceApiKey = core.getInput('huggingface-api-key', { required: true });
     const threshold = parseFloat(core.getInput('threshold', { required: true }));
     const scanPath = core.getInput('path') || '.';
     const githubToken = core.getInput('github-token', { required: false });
 
     // Mask the API key in logs
-    core.setSecret(googleApiKey);
+    core.setSecret(huggingfaceApiKey);
 
     // Resolve absolute path
     const workspacePath = process.env.GITHUB_WORKSPACE || process.cwd();
@@ -48,7 +48,7 @@ async function run(): Promise<void> {
 
     // Install dryscan-cli first to separate npm output from CLI output
     core.startGroup('Installing DryScan CLI');
-    const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@1.0.16'], {
+    const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@1.1.1'], {
       ignoreReturnCode: true,
     });
     if (installExitCode !== 0) {
@@ -57,10 +57,10 @@ async function run(): Promise<void> {
     core.info('DryScan CLI installed successfully');
     core.endGroup();
 
-    // Configure dryscan to use Google embeddings
+    // Configure dryscan to use HuggingFace embeddings
     core.startGroup('Configuring DryScan');
-    await ensureGoogleEmbeddingsConfig(absoluteScanPath);
-    core.info('Configured DryScan to use Google Gemini embeddings');
+    await ensureHuggingFaceEmbeddingsConfig(absoluteScanPath);
+    core.info('Configured DryScan to use HuggingFace embeddings');
     core.endGroup();
 
     // Initialize dryscan
@@ -71,7 +71,7 @@ async function run(): Promise<void> {
       ignoreReturnCode: true,
       env: {
         ...process.env,
-        GOOGLE_API_KEY: googleApiKey,
+        HUGGINGFACEHUB_API_KEY: huggingfaceApiKey,
       },
       listeners: {
         stdout: (data: Buffer) => {
@@ -104,7 +104,7 @@ async function run(): Promise<void> {
       ignoreReturnCode: true,
       env: {
         ...process.env,
-        GOOGLE_API_KEY: googleApiKey,
+        HUGGINGFACEHUB_API_KEY: huggingfaceApiKey,
       },
       listeners: {
         stdout: (data: Buffer) => {
@@ -145,7 +145,7 @@ async function run(): Promise<void> {
       ignoreReturnCode: true,
       env: {
         ...process.env,
-        GOOGLE_API_KEY: googleApiKey,
+        HUGGINGFACEHUB_API_KEY: huggingfaceApiKey,
       },
       listeners: {
         stdout: (data: Buffer) => {

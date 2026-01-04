@@ -75585,15 +75585,15 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ensureGoogleEmbeddingsConfig = ensureGoogleEmbeddingsConfig;
+exports.ensureHuggingFaceEmbeddingsConfig = ensureHuggingFaceEmbeddingsConfig;
 const fs = __importStar(__nccwpck_require__(91943));
 const path = __importStar(__nccwpck_require__(16928));
 const CONFIG_FILENAME = 'dryconfig.json';
 /**
- * Ensures dryconfig.json exists and is configured to use Google embeddings.
+ * Ensures dryconfig.json exists and is configured to use HuggingFace embeddings.
  * Creates a new config if it doesn't exist, or modifies existing one.
  */
-async function ensureGoogleEmbeddingsConfig(repoPath) {
+async function ensureHuggingFaceEmbeddingsConfig(repoPath) {
     const configPath = path.join(repoPath, CONFIG_FILENAME);
     let config;
     try {
@@ -75610,14 +75610,12 @@ async function ensureGoogleEmbeddingsConfig(repoPath) {
             minLines: 3,
             minBlockLines: 5,
             threshold: 0.9,
-            embeddingModel: "gemini-embedding-001",
-            embeddingSource: "google",
+            embeddingSource: "huggingface",
             contextLength: 2048,
         };
     }
-    // Set embedding source to Google
-    config.embeddingSource = 'google';
-    config.embeddingModel = 'gemini-embedding-001';
+    // Set embedding source to HuggingFace
+    config.embeddingSource = 'huggingface';
     await fs.writeFile(configPath, JSON.stringify(config, null, 2), 'utf-8');
 }
 
@@ -75676,12 +75674,12 @@ const ARTIFACT_NAME = 'dryscan-report';
 async function run() {
     try {
         // Get inputs
-        const googleApiKey = core.getInput('google-api-key', { required: true });
+        const huggingfaceApiKey = core.getInput('huggingface-api-key', { required: true });
         const threshold = parseFloat(core.getInput('threshold', { required: true }));
         const scanPath = core.getInput('path') || '.';
         const githubToken = core.getInput('github-token', { required: false });
         // Mask the API key in logs
-        core.setSecret(googleApiKey);
+        core.setSecret(huggingfaceApiKey);
         // Resolve absolute path
         const workspacePath = process.env.GITHUB_WORKSPACE || process.cwd();
         const absoluteScanPath = path.resolve(workspacePath, scanPath);
@@ -75689,7 +75687,7 @@ async function run() {
         core.info(`Threshold: ${threshold}`);
         // Install dryscan-cli first to separate npm output from CLI output
         core.startGroup('Installing DryScan CLI');
-        const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@1.0.16'], {
+        const installExitCode = await exec.exec('npm', ['install', '-g', '@goshenkata/dryscan-cli@1.1.1'], {
             ignoreReturnCode: true,
         });
         if (installExitCode !== 0) {
@@ -75697,10 +75695,10 @@ async function run() {
         }
         core.info('DryScan CLI installed successfully');
         core.endGroup();
-        // Configure dryscan to use Google embeddings
+        // Configure dryscan to use HuggingFace embeddings
         core.startGroup('Configuring DryScan');
-        await (0, config_1.ensureGoogleEmbeddingsConfig)(absoluteScanPath);
-        core.info('Configured DryScan to use Google Gemini embeddings');
+        await (0, config_1.ensureHuggingFaceEmbeddingsConfig)(absoluteScanPath);
+        core.info('Configured DryScan to use HuggingFace embeddings');
         core.endGroup();
         // Initialize dryscan
         core.startGroup('Initializing DryScan');
@@ -75710,7 +75708,7 @@ async function run() {
             ignoreReturnCode: true,
             env: {
                 ...process.env,
-                GOOGLE_API_KEY: googleApiKey,
+                HUGGINGFACEHUB_API_KEY: huggingfaceApiKey,
             },
             listeners: {
                 stdout: (data) => {
@@ -75744,7 +75742,7 @@ async function run() {
             ignoreReturnCode: true,
             env: {
                 ...process.env,
-                GOOGLE_API_KEY: googleApiKey,
+                HUGGINGFACEHUB_API_KEY: huggingfaceApiKey,
             },
             listeners: {
                 stdout: (data) => {
@@ -75784,7 +75782,7 @@ async function run() {
             ignoreReturnCode: true,
             env: {
                 ...process.env,
-                GOOGLE_API_KEY: googleApiKey,
+                HUGGINGFACEHUB_API_KEY: huggingfaceApiKey,
             },
             listeners: {
                 stdout: (data) => {
