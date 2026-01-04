@@ -36,7 +36,7 @@ jobs:
 
 | Input | Required | Default | Description |
 |-------|----------|---------|-------------|
-| `google-api-key` | Yes | - | Google API key for Gemini embeddings |
+| `huggingface-api-key` | Yes | - | API key Huggingface (calls google/embeddinggemma-300m) |
 | `threshold` | Yes | `20` | Maximum allowed duplication score (0-100) |
 | `path` | No | `.` | Path to scan for duplicates |
 | `github-token` | No | `${{ github.token }}` | GitHub token for PR comments |
