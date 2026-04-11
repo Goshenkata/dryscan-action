@@ -35,7 +35,7 @@ export async function ensureHuggingFaceEmbeddingsConfig(repoPath: string): Promi
       excludedPairs: [],
       minLines: 3,
       minBlockLines: 5,
-      threshold: 0.9,
+      threshold: 0.85,
       embeddingSource: "huggingface",
       contextLength: 2048,
     };
